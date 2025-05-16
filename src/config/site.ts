@@ -1,9 +1,9 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Vite",
+  name: "AWM Assistant",
   description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
+    "AWM Assistant is a tool that helps you find the best deals for your business.",
   mainNav: [
     {
       title: "Home",

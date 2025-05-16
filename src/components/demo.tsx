@@ -1,7 +1,8 @@
 import { AssistantRuntimeProvider, ChatModelAdapter, useLocalRuntime } from "@assistant-ui/react";
 import { ThreadList } from "@/components/assistant-ui/thread-list";
 import { Thread } from "@/components/assistant-ui/thread";
-import { useChatRuntime } from "@assistant-ui/react-ai-sdk";
+import { useState } from "react";
+import { Combobox } from "@/components/ui/combobox";
 
 const MyModelAdapter: ChatModelAdapter = {
   async run({ messages, abortSignal }) {
@@ -23,7 +24,7 @@ const MyModelAdapter: ChatModelAdapter = {
     const data = { text: "Hello, world!" };
     console.log(messages);
     console.log(abortSignal);
- 
+
     return {
       content: [
         {
@@ -34,17 +35,51 @@ const MyModelAdapter: ChatModelAdapter = {
     };
   },
 };
+
+const deals = [
+  {
+    value: "apple",
+    label: "Apple",
+  },
+  {
+    value: "microsoft",
+    label: "Microsoft",
+  },
  
+  {
+    value: "nvidia",
+    label: "Nvidia",
+  },
+];
+
+type Deal = "microsoft" | "apple" | "nvidia";
 
 export const Demo = () => {
   const runtime = useLocalRuntime(MyModelAdapter);
+  const [value, setValue] = useState<Deal | null>(null);
 
   return (
-    <AssistantRuntimeProvider runtime={runtime}>
-      <div className="grid h-dvh grid-cols-[200px_1fr] gap-x-2 px-4 py-4">
-        <ThreadList />
-        <Thread />
+    <div className="mx-auto my-8 h-[80vh] w-full max-w-[1280px] overflow-hidden rounded-lg border bg-background shadow-lg">
+      <div className="p-4 border-b flex items-center gap-2">
+        <label className="text-sm font-medium">Deal to Search:</label>
+        <div className="w-1/2">
+          <Combobox
+            options={deals}
+            value={value || ""}
+            onValueChange={(newValue) => {
+              setValue(newValue as Deal);
+              console.log("Selected deal:", newValue);
+            }}
+            placeholder="Select deal..."
+          />
+        </div>
       </div>
-    </AssistantRuntimeProvider>
+      <AssistantRuntimeProvider runtime={runtime}>
+        <div className="grid h-[calc(80vh-73px)] grid-cols-[200px_1fr] gap-x-2 p-4">
+          <ThreadList />
+          <Thread />
+        </div>
+      </AssistantRuntimeProvider>
+    </div>
   );
 };
